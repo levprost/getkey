@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'avatar' => 'admin.png', 
             'role' => 'admin',
             'password' => Hash::make('admin2024!'), 
-            'email' => 'admin@', 
+            'email' => 'admin@gmail.com', 
             'email_verified_at' => now(), 
             'remember_token' => Str::random(10), 
         ]); 
