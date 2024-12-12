@@ -1,14 +1,12 @@
 @extends('layouts.app')
-
 @section('content')
-
 <div class="container py-5">
     <div class="row">
         <div class="col-lg-7 mx-auto">
             <div class="bg-white rounded-lg shadow-sm p-5">
                 <div class="tab-content">
                     <div id="nav-tab-card" class="tab-pane fade show active">
-                        <h3> Ajouter un livre</h3>
+                        <h3>Editer un produit</h3>
                         <!-- Message d'information -->
                         @if ($errors->any())
                         <div class="alert alert-danger">
@@ -20,39 +18,37 @@
                         </div>
                         @endif
                         <!-- Formulaire -->
-                        <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data">
                             @csrf
+                            @method('PATCH')
                             <div class="form-group">
-                                <label>Nom produit</label>
-                                <input type="text" name="name_product" class="form-control">
+                                <label>Nom de produit</label>
+                                <input type="text" name="name_product" class="form-control"
+                                value="{{ $product->name_product }}">
                             </div>
                             <div class="form-group">
-                                <label>Sumary</label>
-                                <input type="text" name="content_product" class="form-control">
+                                <label>Content</label>
+                                <input type="text" name="content_product" class="form-control"
+                                    value="{{ $product->content_product }}">
                             </div>
                             <div class="form-group">
                                 <label>Discription</label>
-                                <input type="text" name="description_product" class="form-control">
+                                <input type="text" name="description_product" class="form-control"
+                                    value="{{ $product->description_product }}">
                             </div>
                             <div class="form-group">
                                 <label>Prix</label>
-                                <input type="text" name="price_product" class="form-control">
+                                <input type="text" name="price_product" class="form-control"
+                                    value="{{ $product->price_product }}">
                             </div>
                             <div class="form-group col-sm-12">
-                                <label for="image_product" class="form-label">Image du product</label>
+                                <label for="image_product" class="form-label">Image du produit</label>
                                 <input type="file" class="form-control" name="image_product" id="image_product">
                             </div>
                             <div class="form-group col-sm-12">
-                                <label for="photo_product" class="form-label">Photo du product</label>
+                                <label for="photo_product" class="form-label">photo du produit</label>
                                 <input type="file" class="form-control" name="photo_product" id="photo_product">
                             </div>
-                            <label>Tags :</label> 
-                                @foreach ($sales as $sale) 
-                                <div> 
-                                    <input type="checkbox" id="sale{{ $sale->id }}" name="sales[]" value="{{ $sale->id }}"> 
-                                    <label for="sales{{ $sale->id }}">{{ $sale->name_sales }}</label> 
-                                </div> 
-                                @endforeach
                             <div class="form-group">
                                 <select name="category_id" class="custom-select">
                                     <option value=""> --Catégorie-- </option>
@@ -61,8 +57,14 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary  rounded-pill shadow-sm">
-                                Ajouter un livre </button>
+                            @foreach ($sales as $sale) 
+                                <div> 
+                                    <input type="checkbox" id="sale{{ $sale->id }}" name="sales[]" value="{{ $sale->id }}"> 
+                                    <label for="sales{{ $sale->id }}">{{ $sale->name_sales }}</label> 
+                                </div> 
+                            @endforeach
+                            
+                            <button type="submit" class="btn btn-primary  rounded-pill shadow-sm">Mettre à jour</button>
                         </form>
                         <!-- Fin du formulaire -->
                     </div>
@@ -70,5 +72,4 @@
             </div>
         </div>
     </div>
-
-@endsection
+    @endsection

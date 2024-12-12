@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return view('products.index', compact('products'));
+        $sales = Sale::all(); 
+        return view('products.index', compact('products','sales'));
     }
 
     /**
@@ -23,7 +25,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all(); 
-        return view('products.create',compact('categories'));
+        $sales = Sale::all();
+        return view('products.create',compact('categories','sales'));
     }
 
     /**
@@ -55,15 +58,34 @@ class ProductController extends Controller
         } else { 
           $filename = Null; 
         } 
-        Product::create([
+        $filename2 = ""; 
+        if ($request->hasFile('photo_product')) { 
+        // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg" 
+          $filenameWithExt = $request->file('photo_product')->getClientOriginalName(); 
+          $filenameWithExt = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
+        // On récupère l'extension du fichier, résultat $extension : ".jpg" 
+          $extension = $request->file('photo_product')->getClientOriginalExtension(); 
+        // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $filename :"jeanmiche_20220422.jpg" 
+          $filename2 = $filenameWithExt. '_' .time().'.'.$extension; 
+        // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin 
+        ///storage/app 
+          $request->file('photo_product')->storeAs('uploads', $filename2); 
+        } else { 
+          $filename2 = Null; 
+        } 
+       $products = Product::create([
             'name_product' => $request->name_product,
             'content_product' => $request->content_product,
             'description_product' => $request->description_product,
             'price_product' => $request->price_product,
             'image_product' => $filename,
+            'photo_product' => $filename2,
             'category_id' => $request->category_id,
             
                 ]);
+                if ($request->has('sales')) {  
+                    $products->sales()->attach($request->sales); 
+                } 
         return redirect()->route('products.index')
             ->with('succes-s', 'Produit ajouté avec succès !');
     }
@@ -83,7 +105,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        return view('products.edit', compact('products'));
+        $sales = Sale::all();
+        return view('products.edit', compact('product','categories','sales'));
     }
 
     /**
@@ -105,7 +128,7 @@ class ProductController extends Controller
         ]);
     
         // Если есть новое изображение, обработать его
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('image_product')) {
             // Сохранение нового файла изображения
             $filenameWithExt = $request->file('image_product')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -121,6 +144,21 @@ class ProductController extends Controller
             // Если изображения нет, оставить старое
             $validatedData['image_product'] = $product->image;
         }
+        $filename2 = ""; 
+        if ($request->hasFile('photo_product')) { 
+        // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg" 
+          $filenameWithExt = $request->file('photo_product')->getClientOriginalName(); 
+          $filenameWithExt = pathinfo($filenameWithExt, PATHINFO_FILENAME); 
+        // On récupère l'extension du fichier, résultat $extension : ".jpg" 
+          $extension = $request->file('photo_product')->getClientOriginalExtension(); 
+        // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $filename :"jeanmiche_20220422.jpg" 
+          $filename2 = $filenameWithExt. '_' .time().'.'.$extension; 
+        // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin 
+        ///storage/app 
+          $request->file('photo_product')->storeAs('uploads', $filename2); 
+        } else { 
+          $filename2 = Null; 
+        } 
     
         // Обновление книги
         $product->update($validatedData);
