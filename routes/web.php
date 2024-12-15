@@ -14,5 +14,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('categories', CategoryController::class);
+Route::delete('/products/{product}/sales/{sale}', [ProductController::class, 'removeSale'])->name('products.removeSale');
 Route::resource('products', ProductController::class); 
 Route::resource('sales', SaleController::class);

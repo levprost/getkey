@@ -28,13 +28,13 @@
                                 <h5 class="card-title">{{ $product->name_product }}</h5>
                                 <p class="card-text text-muted">{{ Str::limit($product->description_product, 100) }}</p>
                                 <p class="card-text"><strong>Description:</strong> {{ $product->content_product }}</p>
-                                <p class="card-text"><strong>Solde:
-                                    @foreach ($sales as $sales)
-                                        <label class="bg-success" fort="sales{{ $sales->id }}">{{ $sales->name_sales }}</label>
+                                <p class="card-text"><strong>Solde:</strong>
+                                    @foreach ($product->sales as $sale)
+                                    <label class="bg-success" fort="sales{{ $sale->id }}">{{ $sale->name_sales }}</label>
                                     @endforeach
                                 </p>
-
                             </div>
+
                             <div class="card-footer d-flex justify-content-between">
                                 <a href="{{ route('products.edit', $product->id)}}" class="btn btn-primary btn-sm">Editer</a>
                                 <form action="{{ route('products.destroy', $product->id)}}" method="POST" style="display: inline-block">

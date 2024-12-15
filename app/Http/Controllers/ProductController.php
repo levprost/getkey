@@ -106,7 +106,10 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $categories = Category::all();
         $sales = Sale::all();
-        return view('products.edit', compact('product','categories','sales'));
+
+        $activeSales = $product->sales()->pluck('sales.id')->toArray();
+
+        return view('products.edit', compact('product','categories','sales','activeSales'));
     }
 
     /**
@@ -118,13 +121,14 @@ class ProductController extends Controller
 
         // Валидация данных
         $validatedData = $request->validate([
-            'name_product' => 'required',
-            'content_product' => 'required',
-            'description_product' => 'required',
-            'price_product' => 'required',
-            'photo_product' => 'required',
-            'image_product'=>'required|image|mimes:jpeg,png,jpg,gif,jfif,svg',
-            'category_id' => 'required',
+            'name_product' => 'nullable',
+            'content_product' => 'nullable',
+            'description_product' => 'nullable',
+            'price_product' => 'nullable',
+            'photo_product' => 'nullable|image|mimes:jpeg,png,jpg,gif,jfif,svg',
+            'image_product'=>'nullable|image|mimes:jpeg,png,jpg,gif,jfif,svg',
+            'category_id' => 'nullable',
+            'sales' => 'nullable',
         ]);
     
         // Если есть новое изображение, обработать его
@@ -159,22 +163,27 @@ class ProductController extends Controller
         } else { 
           $filename2 = Null; 
         } 
+
+        if ($request->has('sales')) { $product->sales()->sync($request->input('sales')); } else { $product->sales()->detach(); }
     
         // Обновление книги
-        $product->update($validatedData);
+        $product->update(array_filter($validatedData));
     
         // Перенаправление с сообщением об успехе
         return redirect()->route('products.index')->with('success', 'Produit a bien été modifié!');
+       
     
     }
 
+    
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
-        return redirect('/products')->with('success', 'Produit supprimé avec succès');
+      $product = Product::findOrFail($id);
+      $product->delete();
+      return redirect('/products')->with('success', 'Produit supprimé avec succès');
     }
+
 }

@@ -24,7 +24,7 @@
                             <div class="form-group">
                                 <label>Nom de produit</label>
                                 <input type="text" name="name_product" class="form-control"
-                                value="{{ $product->name_product }}">
+                                    value="{{ $product->name_product }}">
                             </div>
                             <div class="form-group">
                                 <label>Content</label>
@@ -57,12 +57,19 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @foreach ($sales as $sale) 
-                                <div> 
-                                    <input type="checkbox" id="sale{{ $sale->id }}" name="sales[]" value="{{ $sale->id }}"> 
-                                    <label for="sales{{ $sale->id }}">{{ $sale->name_sales }}</label> 
-                                </div> 
-                            @endforeach
+
+                                <div class="form-group">
+                                    <label for="sales">Распродажи</label>
+                                    @foreach($sales as $sale)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="sale_{{ $sale->id }}" name="sales[]" value="{{ $sale->id }}" {{ in_array($sale->id, $activeSales) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="sale_{{ $sale->id }}">
+                                                {{ $sale->name_sales }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+
                             
                             <button type="submit" class="btn btn-primary  rounded-pill shadow-sm">Mettre à jour</button>
                         </form>
