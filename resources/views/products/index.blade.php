@@ -48,6 +48,7 @@
                             @if($product->photo_product)
                             <img src="/storage/uploads/{{$product->photo_product}}" class="card-img-top" alt="Image de {{ $product->name_product }}" style="height: 200px; object-fit: cover;">
                             @endif
+                            <form method="POST" action="{{ route('products.rate', $product->id) }}"> @csrf <button type="submit" class="btn btn-primary">Оценить</button> </form>
                             <div class="card-body">
                                 <p class="card-text"><strong>Catégorie:</strong> {{ $product->category->name_category }}</p>
                                 <h5 class="card-title">{{ $product->name_product }}</h5>

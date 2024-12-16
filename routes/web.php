@@ -19,3 +19,4 @@ Route::resource('users', UserController::class)->except('index','create','store'
 Route::delete('/products/{product}/sales/{sale}', [ProductController::class, 'removeSale'])->name('products.removeSale');
 Route::resource('products', ProductController::class); 
 Route::resource('sales', SaleController::class);
+Route::post('products/{id}/rate', [ProductController::class, 'rate'])->name('products.rate');
